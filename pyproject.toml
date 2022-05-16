@@ -1,0 +1,65 @@
+[project]
+name = "robox3d"
+version = "0.1.0"
+description = "Lightweight robot simulation on Box3D — URDF, sensors, control, and a browser-native viewer"
+readme = "README.md"
+authors = [
+    { name = "neka-nat", email = "nekanat.stock@gmail.com" }
+]
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+keywords = ["robotics", "simulation", "physics", "urdf", "box3d", "robot"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "cffi>=2.0.0",
+    "numpy>=1.24",
+    "yourdfpy>=0.0.60",
+]
+
+[project.urls]
+Repository = "https://github.com/neka-nat/robox3d"
+Issues = "https://github.com/neka-nat/robox3d/issues"
+
+[project.optional-dependencies]
+coacd = ["coacd>=1.0.0"]
+viz = [
+    "websockets>=14.0",
+]
+
+[build-system]
+requires = ["scikit-build-core>=0.11"]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+wheel.packages = ["src/robox3d"]
+build-dir = "build/skbuild"
+cmake.version = ">=3.22"
+# The bundled viewer build (tools/build_viewer.py) is gitignored but must ship
+# in wheels/sdists.
+sdist.include = ["src/robox3d/viz/static/**"]
+
+[tool.cibuildwheel]
+build = ["cp310-*", "cp311-*", "cp312-*", "cp313-*"]
+skip = ["*-musllinux*"]
+test-command = "python {project}/tools/wheel_smoke.py"
+
+[tool.cibuildwheel.macos]
+environment = { MACOSX_DEPLOYMENT_TARGET = "11.0" }
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "websockets>=14.0",
+]

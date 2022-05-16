@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: astral-sh/setup-uv@v5
+
+      # --no-editable builds and installs as a normal wheel, verifying all the way
+      # through bundling the shared libraries into robox3d/_lib
+      - name: Install (builds box3d + shim via scikit-build-core)
+        run: uv sync --no-editable
+
+      # --no-sync: prevent uv run's default re-sync from reverting to editable
+      - name: Run tests
+        run: uv run --no-sync pytest tests/ -v
+
+      - name: Run examples (milestone check)
+        run: |
+          uv run --no-sync python examples/falling_box.py
+          uv run --no-sync python examples/pendulum.py
+          uv run --no-sync python examples/arm_trajectory.py
+          uv run --no-sync python examples/arm_sensors.py
+
+  viewer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: viewer/pnpm-lock.yaml
+
+      - name: Build viewer (typecheck + bundle)
+        working-directory: viewer
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build

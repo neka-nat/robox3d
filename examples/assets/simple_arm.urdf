@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+<!-- Simplified 6-axis arm with UR5-class dimensions and masses (primitive collisions).
+     For robox3d tests and examples. At the zero pose the arm extends horizontally along +X. -->
+<robot name="simple_arm">
+
+  <material name="m_base_link"><color rgba="0.227 0.255 0.322 1"/></material>
+  <material name="m_shoulder_link"><color rgba="0.298 0.608 0.910 1"/></material>
+  <material name="m_upper_arm_link"><color rgba="0.373 0.749 0.478 1"/></material>
+  <material name="m_forearm_link"><color rgba="0.878 0.722 0.294 1"/></material>
+  <material name="m_wrist_1_link"><color rgba="0.910 0.451 0.298 1"/></material>
+  <material name="m_wrist_2_link"><color rgba="0.769 0.420 0.878 1"/></material>
+  <material name="m_wrist_3_link"><color rgba="0.357 0.784 0.769 1"/></material>
+  <material name="m_flange"><color rgba="0.541 0.608 0.690 1"/></material>
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0.05"/>
+      <mass value="4.0"/>
+      <inertia ixx="0.0061" iyy="0.0061" izz="0.0113" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0.05"/>
+      <geometry><cylinder radius="0.075" length="0.1"/></geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0.05"/>
+      <geometry><cylinder radius="0.075" length="0.1"/></geometry>
+      <material name="m_base_link"/>
+    </visual>
+
+  </link>
+
+  <joint name="shoulder_pan" type="revolute">
+    <parent link="base_link"/>
+    <child link="shoulder_link"/>
+    <origin xyz="0 0 0.1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.9" upper="2.9" effort="150" velocity="3.15"/>
+  </joint>
+
+  <link name="shoulder_link">
+    <inertial>
+      <origin xyz="0 0 0.06"/>
+      <mass value="3.7"/>
+      <inertia ixx="0.0078" iyy="0.0078" izz="0.0067" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0.06"/>
+      <geometry><cylinder radius="0.06" length="0.12"/></geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0.06"/>
+      <geometry><cylinder radius="0.06" length="0.12"/></geometry>
+      <material name="m_shoulder_link"/>
+    </visual>
+
+  </link>
+
+  <joint name="shoulder_lift" type="revolute">
+    <parent link="shoulder_link"/>
+    <child link="upper_arm_link"/>
+    <origin xyz="0 0 0.12"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.9" upper="2.9" effort="150" velocity="3.15"/>
+  </joint>
+
+  <link name="upper_arm_link">
+    <inertial>
+      <origin xyz="0.2125 0 0"/>
+      <mass value="8.4"/>
+      <inertia ixx="0.011" iyy="0.13" izz="0.13" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+    <collision>
+      <origin xyz="0.2125 0 0" rpy="0 1.5707963267948966 0"/>
+      <geometry><cylinder radius="0.05" length="0.425"/></geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.2125 0 0" rpy="0 1.5707963267948966 0"/>
+      <geometry><cylinder radius="0.05" length="0.425"/></geometry>
+      <material name="m_upper_arm_link"/>
+    </visual>
+
+  </link>
+
+  <joint name="elbow" type="revolute">
+    <parent link="upper_arm_link"/>
+    <child link="forearm_link"/>
+    <origin xyz="0.425 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.9" upper="2.9" effort="150" velocity="3.15"/>
+  </joint>
+
+  <link name="forearm_link">
+    <inertial>
+      <origin xyz="0.196 0 0"/>
+      <mass value="2.3"/>
+      <inertia ixx="0.002" iyy="0.03" izz="0.03" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+    <collision>
+      <origin xyz="0.196 0 0" rpy="0 1.5707963267948966 0"/>
+      <geometry><cylinder radius="0.04" length="0.392"/></geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.196 0 0" rpy="0 1.5707963267948966 0"/>
+      <geometry><cylinder radius="0.04" length="0.392"/></geometry>
+      <material name="m_forearm_link"/>
+    </visual>
+
+  </link>
+
+  <joint name="wrist_1" type="revolute">
+    <parent link="forearm_link"/>
+    <child link="wrist_1_link"/>
+    <origin xyz="0.392 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.9" upper="2.9" effort="28" velocity="3.2"/>
+  </joint>
+
+  <link name="wrist_1_link">
+    <inertial>
+      <origin xyz="0.045 0 0"/>
+      <mass value="1.2"/>
+      <inertia ixx="0.002" iyy="0.002" izz="0.002" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+    <collision>
+      <origin xyz="0.045 0 0" rpy="0 1.5707963267948966 0"/>
+      <geometry><cylinder radius="0.035" length="0.09"/></geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.045 0 0" rpy="0 1.5707963267948966 0"/>
+      <geometry><cylinder radius="0.035" length="0.09"/></geometry>
+      <material name="m_wrist_1_link"/>
+    </visual>
+
+  </link>
+
+  <joint name="wrist_2" type="revolute">
+    <parent link="wrist_1_link"/>
+    <child link="wrist_2_link"/>
+    <origin xyz="0.09 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.9" upper="2.9" effort="28" velocity="3.2"/>
+  </joint>
+
+  <link name="wrist_2_link">
+    <inertial>
+      <origin xyz="0.045 0 0"/>
+      <mass value="1.2"/>
+      <inertia ixx="0.002" iyy="0.002" izz="0.002" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+    <collision>
+      <origin xyz="0.045 0 0" rpy="0 1.5707963267948966 0"/>
+      <geometry><cylinder radius="0.035" length="0.09"/></geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.045 0 0" rpy="0 1.5707963267948966 0"/>
+      <geometry><cylinder radius="0.035" length="0.09"/></geometry>
+      <material name="m_wrist_2_link"/>
+    </visual>
+
+  </link>
+
+  <joint name="wrist_3" type="revolute">
+    <parent link="wrist_2_link"/>
+    <child link="wrist_3_link"/>
+    <origin xyz="0.09 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.9" upper="2.9" effort="28" velocity="3.2"/>
+  </joint>
+
+  <link name="wrist_3_link">
+    <inertial>
+      <origin xyz="0.025 0 0"/>
+      <mass value="0.25"/>
+      <inertia ixx="0.0005" iyy="0.0005" izz="0.0005" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+    <collision>
+      <origin xyz="0.025 0 0" rpy="0 1.5707963267948966 0"/>
+      <geometry><cylinder radius="0.03" length="0.05"/></geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.025 0 0" rpy="0 1.5707963267948966 0"/>
+      <geometry><cylinder radius="0.03" length="0.05"/></geometry>
+      <material name="m_wrist_3_link"/>
+    </visual>
+
+  </link>
+
+  <!-- Fixed link with no inertia: exercises the merge-into-parent-body path -->
+  <joint name="flange_fixed" type="fixed">
+    <parent link="wrist_3_link"/>
+    <child link="flange"/>
+    <origin xyz="0.05 0 0"/>
+  </joint>
+
+  <link name="flange">
+    <collision>
+      <origin xyz="0.005 0 0"/>
+      <geometry><box size="0.01 0.06 0.06"/></geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.005 0 0"/>
+      <geometry><box size="0.01 0.06 0.06"/></geometry>
+      <material name="m_flange"/>
+    </visual>
+
+  </link>
+
+</robot>

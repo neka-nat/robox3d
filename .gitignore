@@ -1,0 +1,12 @@
+/target
+Cargo.lock
+/build/
+/dist/
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+viewer/dist/
+*.rbx
+src/robox3d/viz/static/
+viewer/tsconfig.tsbuildinfo
