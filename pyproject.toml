@@ -52,8 +52,16 @@ sdist.include = ["src/robox3d/viz/static/**"]
 
 [tool.cibuildwheel]
 build = ["cp310-*", "cp311-*", "cp312-*", "cp313-*"]
-skip = ["*-musllinux*"]
+# 32-bit targets (win32, linux i686): box3d uses 64-bit intrinsics and the
+# dependency ecosystem (numpy, lxml, ...) no longer ships 32-bit wheels
+skip = ["*-musllinux*", "*-win32", "*_i686"]
 test-command = "python {project}/tools/wheel_smoke.py"
+# The default manylinux2014 image (glibc 2.17) cannot install modern wheels of
+# our transitive test dependencies (pillow, manifold3d, ... ship manylinux_2_28
+# only) and falls back to source builds that fail. manylinux_2_28 still covers
+# every mainstream distro (Ubuntu 20.04+, Debian 11+, RHEL 8+).
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-aarch64-image = "manylinux_2_28"
 
 [tool.cibuildwheel.macos]
 environment = { MACOSX_DEPLOYMENT_TARGET = "11.0" }

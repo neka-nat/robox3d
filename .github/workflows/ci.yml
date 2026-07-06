@@ -12,6 +12,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,15 +29,18 @@ jobs:
       - name: Run tests
         run: uv run --no-sync pytest tests/ -v
 
+      # --headless: examples serve the interactive viewer and run forever by
+      # default; in CI we only want the scripted physics checks
       - name: Run examples (milestone check)
         run: |
-          uv run --no-sync python examples/falling_box.py
-          uv run --no-sync python examples/pendulum.py
-          uv run --no-sync python examples/arm_trajectory.py
-          uv run --no-sync python examples/arm_sensors.py
+          uv run --no-sync python examples/falling_box.py --headless
+          uv run --no-sync python examples/pendulum.py --headless
+          uv run --no-sync python examples/arm_trajectory.py --headless
+          uv run --no-sync python examples/arm_sensors.py --headless
 
   viewer:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 

@@ -23,7 +23,10 @@ else()
 	set_target_properties(robox3d_shim PROPERTIES INSTALL_RPATH "$ORIGIN")
 endif()
 
-# Place the shared libraries in robox3d/_lib/ inside the wheel
+# Place the shared libraries in robox3d/_lib/ inside the wheel.
+# ARCHIVE covers MSVC import libraries (.lib), which would otherwise land in
+# the wheel root's default lib/ directory.
 install(TARGETS box3d robox3d_shim
 	LIBRARY DESTINATION robox3d/_lib
-	RUNTIME DESTINATION robox3d/_lib)
+	RUNTIME DESTINATION robox3d/_lib
+	ARCHIVE DESTINATION robox3d/_lib)

@@ -24,9 +24,16 @@ ffi = FFI()
 ffi.cdef(CDEF)
 ffi.cdef(SHIM_CDEF)
 
-_SUFFIX = ".dylib" if sys.platform == "darwin" else ".so"
-_BOX3D_NAME = f"libbox3d{_SUFFIX}"
-_SHIM_NAME = f"librobox3d_shim{_SUFFIX}"
+if sys.platform == "win32":
+    # MSVC shared libraries have no "lib" prefix
+    _BOX3D_NAME = "box3d.dll"
+    _SHIM_NAME = "robox3d_shim.dll"
+elif sys.platform == "darwin":
+    _BOX3D_NAME = "libbox3d.dylib"
+    _SHIM_NAME = "librobox3d_shim.dylib"
+else:
+    _BOX3D_NAME = "libbox3d.so"
+    _SHIM_NAME = "librobox3d_shim.so"
 
 
 def _candidate_dirs() -> list[Path]:
@@ -73,8 +80,14 @@ _dirs = _candidate_dirs()
 _box3d_path = _find_lib(_BOX3D_NAME, _dirs, required=True)
 _shim_path = _find_lib(_SHIM_NAME, _dirs, required=False)
 
-# the shim depends on libbox3d.so.0, so load that first with RTLD_GLOBAL to resolve it
-lib = ffi.dlopen(_box3d_path, ffi.RTLD_NOW | ffi.RTLD_GLOBAL)
+# The shim links against the box3d library, so load box3d first and make its
+# symbols visible: RTLD_GLOBAL on POSIX; on Windows the loader resolves the
+# shim's box3d.dll import against the already-loaded module of the same name.
+if sys.platform == "win32":
+    os.add_dll_directory(str(Path(_box3d_path).parent))
+    lib = ffi.dlopen(_box3d_path)
+else:
+    lib = ffi.dlopen(_box3d_path, ffi.RTLD_NOW | ffi.RTLD_GLOBAL)
 shim = ffi.dlopen(_shim_path) if _shim_path else None
 
 __all__ = ["ffi", "lib", "shim"]
