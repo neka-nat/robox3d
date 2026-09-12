@@ -5,7 +5,7 @@ effective inertia" (τ = -k·Δθ - c·θ̇, k = I_eff·(2πf)², c = 2ζ·√(k
 Converting from the kp [N·m/rad] / kd [N·m·s/rad] gains standard in robotics
 requires the joint's effective inertia I_eff.
 
-Important (validation-report experiments 2 and 3): I_eff is determined by the
+I_eff is determined by the
 "two adjacent bodies" only, and does not include downstream chain inertia. When
 specifying kp on a multi-link chain, convert using the value returned by
 joint_effective_inertia().

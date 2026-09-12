@@ -101,7 +101,7 @@ class Robot:
         constraint, and the alignment constraint leaks a torque into the hinge
         that grows ~linearly with this value; on serial chains with parallel
         hinges a high value (the world default 240) produces a large frozen
-        tracking error (see docs/spring-chain-investigation.md). The default
+        tracking error (see docs/limitations.md). The default
         60 Hz balances tracking accuracy against pivot rigidity; use ~20 Hz when
         <0.01 rad tracking matters more than tight pivots, or None to keep the
         joints' current tuning.
@@ -142,7 +142,7 @@ class Robot:
         """Torque/force commands for the actuated joints (N·m / N), in actuated order.
 
         Pseudo torque control that "saturates the velocity motor in the commanded
-        direction and sets the max torque to |τ|" (development-plan §Phase 3). Call
+        direction and sets the max torque to |τ|". Call
         it every step. Commands are clamped by the URDF effort limits. Requires a
         prior enable_torque_control() (or a combined setup with disable_springs=False).
         """

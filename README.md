@@ -38,10 +38,8 @@ python -m robox3d.demo so101   # SO-ARM101 with joint sliders — opens at http:
   physical-unit gains (kp in N·m/rad, DC-calibrated), pseudo torque control,
   gravity-compensation feedforward, and F/T, IMU, LiDAR (batched raycasts),
   and contact sensors.
-- **Deterministic & fast** — bit-exact reproducible across thread counts
-  (validated), ~44,000 steps/s (≈180× real time) for a 6-DoF arm with active
-  position control at 240 Hz × 4 substeps on a single desktop CPU core,
-  including per-step Python-side target writes.
+- **Native stepping & batch access** — the physics loop runs in C, with batch
+  APIs for reading body poses and updating joint targets from Python.
 - **Record & replay** — pose recordings (`.rbx`) use the same wire format as
   live streaming; replay them into the same viewer.
 
@@ -162,26 +160,25 @@ until you Ctrl+C — open the printed URL to watch it live (real-time paced).
 Use `--headless` for a fast numeric run without the viewer, and `--port` to
 run several examples at once.
 
-## Scope and honest limitations
+## Scope and limitations
 
-Box3D is a maximal-coordinate rigid-body engine (like game physics, unlike
-MuJoCo's generalized coordinates). robox3d validates and documents what that
-means in practice ([validation report](docs/validation-report.md)):
+Box3D is a maximal-coordinate rigid-body engine. See the
+[limitations and control tuning guide](docs/limitations.md) for practical
+details:
 
-- Joint drift is negligible (0.003 mm over 20 s on a 6-link chain) and 1:100
-  mass ratios stay stable, but **contact-rich scenes are the sweet spot** —
-  precise dynamics studies should cross-check against Pinocchio/MuJoCo.
+- Tracking accuracy and stability depend on the model, payload, time step,
+  and constraint tuning. Validate these for your application.
 - Revolute **joint limits are capped at ±0.99π** by the engine; wider URDF
   limits fall back to command clamping.
-- `substeps < 4` is rejected — the solver needs substepping for stiff chains.
+- Use at least four substeps. Constructing `World(substeps=...)` with a value
+  below four emits `UnstableSimulationWarning`.
 - On chains where **parallel hinges are bracketed by perpendicular ones** (most
   arms), the engine's axis-alignment constraint leaks a small torque into the
-  hinge, proportional to the joint constraint stiffness. robox3d's position
-  control defaults to a tuning that keeps this below ~3° and exposes a knob
-  (`enable_position_control(constraint_hertz=...)`) to trade pivot rigidity for
-  sub-0.01 rad tracking. Full analysis:
-  [docs/spring-chain-investigation.md](docs/spring-chain-investigation.md).
-- Simulation is deterministic across thread counts; recordings are bit-stable.
+  hinge. `enable_position_control(constraint_hertz=...)` trades pivot rigidity
+  for tracking accuracy; the default is 60 Hz.
+- Spring position control does not enforce URDF effort limits.
+- Determinism regression tests cover repeated runs and selected thread counts;
+  they do not establish identical results across all platforms and scenes.
 
 ## Development
 
@@ -189,25 +186,14 @@ means in practice ([validation report](docs/validation-report.md)):
 git clone --recursive https://github.com/neka-nat/robox3d
 cd robox3d
 uv sync                        # builds box3d + shim via scikit-build-core
-uv run pytest                  # 56 tests
+uv run pytest
 uv run python tools/build_viewer.py   # bundle the web viewer (needs pnpm)
 uv run python examples/viz_arm.py
 ```
 
-The Box3D version is pinned via the `external/box3d` git submodule. When the
-upstream API changes, re-run `uv run python tools/gen_ffi.py` and review the
-diff — the cffi bindings are generated from the C headers.
-
-Architecture (details in [docs/development-plan.md](docs/development-plan.md), Japanese):
-
-| Layer | Where | What |
-|---|---|---|
-| 1 FFI | `src/robox3d/_ffi/`, `csrc/` | auto-generated cffi bindings + batch C shim |
-| 1 core | `src/robox3d/core/` | World / Body / joints / batch groups |
-| 2 model | `src/robox3d/model/` | URDF → Box3D (inertia, merging, convex decomposition) |
-| 3 control | `src/robox3d/control/` | kp/kd↔spring conversion, torque control, gravity FF |
-| 3 sensors | `src/robox3d/sensors/` | F/T, IMU, LiDAR, contact |
-| 4 viz | `src/robox3d/viz/`, `viewer/` | WebSocket streaming, recording, R3F viewer |
+See the [development guide](docs/development.md) for prerequisites, viewer
+development, source layout, and binding generation. The
+[documentation index](docs/README.md) links to the available guides.
 
 ## Credits
 

@@ -1,6 +1,6 @@
 """Convert URDF collision geometry to box3d shapes (layer 2).
 
-Approach (see validation-report / development-plan):
+Collision conversion rules:
 - box: turned directly into a hull (b3MakeTransformedBoxHull)
 - sphere: used as-is
 - cylinder: a 16-sided prism convex hull by default ("hull"); "capsule" is also available

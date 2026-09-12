@@ -1,4 +1,4 @@
-"""Energy-conservation regression test (a reduced version of validation-report.md experiment 1).
+"""Energy-conservation regression test for a pendulum.
 
 Monitors whether the solver's dissipation characteristics degrade when box3d is updated.
 """

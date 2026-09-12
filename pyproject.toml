@@ -49,6 +49,7 @@ cmake.version = ">=3.22"
 # The bundled viewer build (tools/build_viewer.py) is gitignored but must ship
 # in wheels/sdists.
 sdist.include = ["src/robox3d/viz/static/**"]
+sdist.exclude = [".internal/**"]
 
 [tool.cibuildwheel]
 build = ["cp310-*", "cp311-*", "cp312-*", "cp313-*"]

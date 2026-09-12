@@ -10,3 +10,6 @@ viewer/dist/
 *.rbx
 src/robox3d/viz/static/
 viewer/tsconfig.tsbuildinfo
+
+# Local planning, investigation notes, and experiment material.
+/.internal/

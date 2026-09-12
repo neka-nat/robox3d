@@ -52,7 +52,7 @@ def main() -> None:
 
         # Control: gravity-compensation FF (payload included) + spring FB.
         # Holding a heavy end-effector payload favors pivot rigidity over
-        # tracking, so raise constraint_hertz (docs/spring-chain-investigation.md).
+        # tracking, so raise constraint_hertz (docs/limitations.md).
         robot.enable_position_control(kp=100.0, constraint_hertz=240.0)
         robot.enable_torque_control(disable_springs=False)
 

@@ -115,7 +115,7 @@ def test_gravity_compensation_extra_payload(world):
     payload.add_box((0.05, 0.05, 0.05), density=2000.0)  # 2 kg
     world.create_weld_joint(robot.link_body("wrist_3_link"), payload, anchor=(1.0, 0, 0.22))
     # Heavy EE payload: favor pivot rigidity over parallel-hinge tracking
-    # (docs/spring-chain-investigation.md) — keep the stiff 240 Hz constraints.
+    # (docs/limitations.md) — keep the stiff 240 Hz constraints.
     robot.enable_position_control(kp=100.0, constraint_hertz=240.0)
     robot.enable_torque_control(disable_springs=False)
     for _ in range(720):

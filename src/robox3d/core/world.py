@@ -14,7 +14,7 @@ from .joints import PrismaticJoint, RevoluteJoint, WeldJoint
 
 MIN_RECOMMENDED_SUBSTEPS = 4
 
-# Recommended constraint stiffness for robotics use (validation-report.md experiment 2: anchor separation 5mm -> 0.3mm)
+# Stiff pivots for loaded joints; position control applies its own tuning (docs/limitations.md).
 DEFAULT_CONSTRAINT_HERTZ = 240.0
 
 
@@ -41,8 +41,7 @@ class World:
         if substeps < MIN_RECOMMENDED_SUBSTEPS:
             warnings.warn(
                 f"substeps={substeps} is not recommended. box3d's solver is designed "
-                f"around substeps, and multi-link systems diverge when substeps<4 "
-                f"(validation-report.md experiment 1).",
+                "around substeps, and multi-link systems can diverge when substeps<4.",
                 UnstableSimulationWarning,
                 stacklevel=2,
             )

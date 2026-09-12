@@ -5,8 +5,8 @@ and the axis-alignment (perpendicularity) rows, and the alignment correction
 leaks a spurious rotation into the hinge DOF that grows ~linearly with the
 constraint hertz. On a chain where a run of parallel hinges is bracketed by
 perpendicular hinges and carries a distal payload, the leaks add coherently and
-freeze the springs away from their targets. Root cause and measurements:
-docs/spring-chain-investigation.md.
+freeze the springs away from their targets. User-facing tuning guidance:
+docs/limitations.md.
 """
 
 import numpy as np

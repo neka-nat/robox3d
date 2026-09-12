@@ -45,7 +45,7 @@ def so101(port: int = 8765, duration: float = float("inf")) -> None:
         robot = robox3d.load_urdf(world, assets.so101())
         # Stiff springs so the small hobby-servo links track the sliders crisply.
         # enable_position_control's default constraint_hertz=60 avoids the
-        # parallel-hinge tracking leak (docs/spring-chain-investigation.md).
+        # parallel-hinge tracking leak (docs/limitations.md).
         robot.enable_position_control(hertz=240.0)
         _serve(world, robot, port, duration, "SO-ARM101 teleop demo")
 

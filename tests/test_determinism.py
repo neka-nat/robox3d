@@ -1,4 +1,4 @@
-"""Determinism regression test (a reduced version of validation-report.md experiment 5).
+"""Determinism regression test for a six-link chain.
 
 Continuously monitors the byte-for-byte reproducibility that RL and CI regression rely on.
 """

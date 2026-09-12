@@ -69,11 +69,11 @@ class _JointBase:
     def set_constraint_tuning(self, hertz: float, damping_ratio: float = 0.0) -> None:
         """Set the constraint stiffness.
 
-        High values (240 Hz) keep pivots tight under load (validation-report.md,
-        experiment 2), but on chains with parallel hinges the axis-alignment
+        High values (240 Hz) keep pivots tight under load, but on chains with
+        parallel hinges the axis-alignment
         constraint leaks into the hinge DOF proportionally to this value and
         degrades spring position tracking — use ~60 Hz for position-controlled
-        joints (docs/spring-chain-investigation.md).
+        joints (docs/limitations.md).
         """
         lib.b3Joint_SetConstraintTuning(self.id, hertz, damping_ratio)
 
